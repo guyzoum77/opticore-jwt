@@ -1,0 +1,33 @@
+{
+  "name": "opticore-jwt",
+  "version": "1.0.0",
+  "description": "json web token",
+  "main": "dist/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guyzoum77/opticore-jwt.git"
+  },
+  "keywords": [
+    "jwt"
+  ],
+  "author": "Guy-serge Kouacou",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/guyzoum77/opticore-jwt/issues"
+  },
+  "homepage": "https://github.com/guyzoum77/opticore-jwt#readme",
+  "devDependencies": {
+    "@types/node": "^20.14.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "tsup": "^8.2.2",
+    "tsx": "^4.16.2"
+  }
+}
