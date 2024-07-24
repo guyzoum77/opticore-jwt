@@ -1,18 +1,14 @@
-import {JwtHeader} from "./jwtHeader.interface";
 import {AlgorithmType} from "../types/algorithm.type";
 
-export interface SignOptionsInterface {
+export interface VerifyOptionsInterface {
     algorithm?: AlgorithmType;
-    expiresIn?: string | number;
-    notBefore?: string | number;
     audience?: string | string[];
     subject?: string;
     issuer?: string;
     jwtId?: string;
-    mutatePayload?: boolean;
-    noTimestamp?: boolean;
-    header?: JwtHeader;
-    encoding?: string;
+    maxAge?: string | number;
+    clockTolerance?: number;
+    clockTimestamp?: number;
     allowInsecureKeySizes?: boolean;
     allowInvalidAsymmetricKeyTypes?: boolean;
 }

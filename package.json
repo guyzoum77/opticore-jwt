@@ -27,6 +27,7 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
+    "opticore-console-log-message": "^1.0.1",
     "tsup": "^8.2.2",
     "tsx": "^4.16.2"
   }
