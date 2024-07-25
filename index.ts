@@ -1,3 +1,3 @@
-import {JWToken} from "./src/services/generateJWT.service";
+import {JWToken} from "./src/core/generateJWT.core";
 
 export { JWToken }

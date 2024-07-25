@@ -20,10 +20,12 @@ Usage
 API Reference
 -------------
 1. sign
+   
    Purpose:
    Creates a JSON Web Token (JWT) by encoding a payload with a specified secret and algorithm.
-```
+   
 Signature:
+```
 sign(payload: object, privateSecretKey: string, headerAlgorithm: AlgorithmType, 
      signAlgorithm: HashAlgorithmType, options: SignOptionsInterface): string
 ```
@@ -36,40 +38,11 @@ sign(payload: object, privateSecretKey: string, headerAlgorithm: AlgorithmType,
 **Returns:**
 * `string`: The generated JWT.
 
-```
-import { JWToken } from 'opticore-jwt';
-const payload = { userId: 123 };
-const secret = 'my-secret-key';
-const token = JWToken.sign(payload, secret);
-
-console.log('Generated Token:', token);
-Generated Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyMywicm9sZSI6IlJPTEVfQURNSU4iLCJleHAiOjE3MjE4MzMxNjMsImF1ZCI6Im15LWF1ZGllbmNlIiwic3ViIjoidXNlciIsImlzcyI6Im15LWlzc3VlciIsImp0aSI6InVuaXF1ZS1pZCJ9.3dW3Zq3WUD1ob0WVi0qTSst2JfzovzwtzX3F0Rqp8si7GvwdKYAAVkulgkWj1b6AMMYcUh5rtnHPmbPf3aiE3A
-```
-
-2. verify
-   Purpose:
-   Verifies the integrity of a JSON Web Token (JWT) and decodes its payload if the token is valid.
-```
-Signature:
-verify(token: string, publicSecretKey: string, signAlgorithm: HashAlgorithmType, options: VerifyOptionsInterface): object | null
-```
-**Parameters:**
-* `token` (string): The JWT to verify.
-* `secret` (string): TThe secret key used to verify the token.
-* `algorithm` (string, optional): The hashing algorithm used for verifying the token. Defaults to 'HS256'. Must match the algorithm used when signing the token.
-
-**Returns:**
-* `object | null `: The decoded payload if the token is valid, or null if verification fails.
-
-
-
 Example
--------------
 ```
 import { JWToken } from 'opticore-jwt';
-
 const payload = { userId: 123, role: "ROLE_ADMIN" };
-const secret = 'my-secret' // or you can use rsa key;
+const secret = 'my-secret' // we recommanding to use rsa key;
 
 const signOptions = {
     algorithm: 'HS256',
@@ -83,10 +56,37 @@ const signOptions = {
     encoding: 'base64'
 };
 
-// generate a token
 const token: string = JWToken.sign(payload, secret, 'HS256', 'sha3-512', signOptions);
+console.log('Generated Token:', token);
+Generated Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyMywicm9sZSI6IlJPTEVfQURNSU4iLCJleHAiOjE3MjE4MzMxNjMsImF1ZCI6Im15LWF1ZGllbmNlIiwic3ViIjoidXNlciIsImlzcyI6Im15LWlzc3VlciIsImp0aSI6InVuaXF1ZS1pZCJ9.3dW3Zq3WUD1ob0WVi0qTSst2JfzovzwtzX3F0Rqp8si7GvwdKYAAVkulgkWj1b6AMMYcUh5rtnHPmbPf3aiE3A
+```
 
-// verify token generated
+2. verify
+
+   Purpose:
+   Verifies the integrity of a JSON Web Token (JWT) and decodes its payload if the token is valid.
+
+Signature:
+```
+verify(token: string, publicSecretKey: string, signAlgorithm: HashAlgorithmType, options: VerifyOptionsInterface): VerifyResultInterface
+```
+**Parameters:**
+* `token` (string): The JWT to verify.
+* `secret` (string): The secret key used to verify the token.
+* `algorithm` (string, optional): The hashing algorithm used for verifying the token. Defaults to 'HS256'. Must match the algorithm used when signing the token.
+
+**Returns:**
+* `VerifyResultInterface`: The decoded payload if the token is valid, or null if verification fails.
+
+#### VerifyResultInterface contains :
+* `status:` 'valid' | 'expired' | 'invalid';
+* `payload?:` VerifyDecodePayloadInterface;
+* `message?:` string;
+
+Example
+```
+import { JWToken } from 'opticore-jwt';
+
 const verifyOptions: VerifyOptionsInterface = {
     algorithm: 'HS256',
     audience: 'my-audience',
@@ -97,7 +97,53 @@ const verifyOptions: VerifyOptionsInterface = {
     clockTolerance: 10
 };
 const decodedPayload = JWToken.verify(token, secret, 'sha3-512', verifyOptions);
+console.log('Decoded Payload:', decodedPayload);
+
+Decoded Payload: {
+  status: 'valid',
+  payload: {
+    userId: 123,
+    role: 'ROLE_ADMIN',
+    exp: 1721860239,
+    aud: 'my-audience',
+    sub: 'user',
+    iss: 'my-issuer',
+    jti: 'unique-id'
+  }
+}
 ```
+
+3. refreshToken
+   
+   Purpose:
+   
+   The `refreshToken` method is used to generate a new JSON Web Token (JWT) based on the payload of an existing token. This is particularly useful when the existing token has expired but the payload is still valid and can be reissued. The method verifies the original token, checks if it has expired, and if valid, issues a new token with a fresh expiration time.
+
+**Parameters:**
+* `token` (string): The JWT to be refreshed. This token must be in the format `header.payload.signature`
+* `secret` (string): The secret key used to sign the JWT. This key must match the one used to sign the original token.
+* `signAlgorithm` (`HashAlgorithmType`): The algorithm used for signing the token. Common algorithms include 'HS256', 'HS384', and 'HS512'.
+* `options` (`VerifyOptionsInterface`): An object containing verification options such as `clockTolerance` and expected values for claims like `audience`, `issuer`, etc.
+
+**Return Value:**
+* `string | null`: Returns a new JWT as a string if the original token is successfully verified and refreshed. Returns `null` if the token cannot be refreshed (e.g., if it is invalid or does not meet the required criteria).
+
+Example
+```
+const token = 'your.jwt.token.here';
+const secret = 'your-secret-key';
+const options = { clockTolerance: 10, algorithm: 'HS256' }; // Example options
+
+const newToken = JWToken.refreshToken(token, secret, 'HS256', options);
+if (newToken) {
+    console.log('New Token:', newToken);
+    // implement your logic 
+} else {
+    console.log('Token could not be refreshed.');
+    // implement your logic 
+}
+```
+
 ### **Notice**
 ```
 it is recommended to use an RSA key as a secret for signature as well as verification.

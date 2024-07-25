@@ -5,7 +5,7 @@ export default defineConfig({
     entry: ['src/index.ts'] ,
     dts: true,
     shims: true,
-    name: "hash-password",
+    name: "OptiCore-JWToken",
     skipNodeModulesBundle: true,
     clean: true
 });
