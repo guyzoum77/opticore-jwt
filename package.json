@@ -2,7 +2,9 @@
   "name": "opticore-jwt",
   "version": "1.0.1",
   "description": "json web token",
-  "main": "dist/index.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsup",
