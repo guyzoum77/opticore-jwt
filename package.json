@@ -13,7 +13,10 @@
     "url": "git+https://github.com/guyzoum77/opticore-jwt.git"
   },
   "keywords": [
-    "jwt"
+    "opticore",
+    "opticore-jwt",
+    "opticore-asymmetric-rsa-keys",
+    "opticore-auth-schema-model"
   ],
   "author": "Guy-serge Kouacou",
   "license": "MIT",

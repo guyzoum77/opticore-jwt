@@ -79,7 +79,7 @@ verify(token: string, publicSecretKey: string, signAlgorithm: HashAlgorithmType,
 * `VerifyResultInterface`: The decoded payload if the token is valid, or null if verification fails.
 
 #### VerifyResultInterface contains :
-* `status:` 'valid' | 'expired' | 'invalid';
+* `status:` 'VALID' | 'EXPIRED' | 'INVALID';
 * `payload?:` VerifyDecodePayloadInterface;
 * `message?:` string;
 
