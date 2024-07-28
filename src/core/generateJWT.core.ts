@@ -11,6 +11,7 @@ import {HttpStatusCodesConstant as status} from "../utils/constants/httpStatusCo
 import {VerifyDecodePayloadInterface as VerifyDecodePayload} from "../interfaces/VerifyDecodePayload.interface";
 import {VerifyResultInterface as VerifyResult} from "../interfaces/VerifyResultInterface";
 import {TokenStatusEnum as tokenStatus} from "../enums/tokenStatus.enum";
+import {charsetConstant as charset} from "../utils/constants/charset.constant";
 
 export class JWToken {
     
@@ -61,12 +62,12 @@ export class JWToken {
     /**
      *
      * @param payload
-     * @param privateSecretKey
+     * @param secretKey
      * @param headerAlgorithm
      * @param signAlgorithm
      * @param options
      */
-    static sign(payload: object, privateSecretKey: string, headerAlgorithm: AlgorithmType, signAlgorithm: HashAlgorithmType, options: SignOptions): string {
+    static sign(payload: object, secretKey: string, headerAlgorithm: AlgorithmType, signAlgorithm: HashAlgorithmType, options: SignOptions): string {
         const currentTimestamp: number = Math.floor(Date.now() / 1000);
         const fullPayload = {
             ...payload,
@@ -88,7 +89,7 @@ export class JWToken {
         const encodedHeader: string  = BaseUrlUtils.base64UrlEncode(JSON.stringify(fullHeader));
         const encodedPayload: string = BaseUrlUtils.base64UrlEncode(JSON.stringify(fullPayload));
 
-        const signature: string = createHmac(signAlgorithm, privateSecretKey)
+        const signature: string = createHmac(signAlgorithm, secretKey)
             .update(`${encodedHeader}.${encodedPayload}`)
             .digest(<BinaryToTextEncoding>options.encoding || "base64")
             .replace(/=+$/, "")
@@ -102,13 +103,13 @@ export class JWToken {
     /**
      *
      * @param token
-     * @param publicSecretKey
+     * @param secretKey
      * @param signAlgorithm
      * @param options
      *
      * Return a valid as status and payload after all verification conditions are met.
      */
-    static verify(token: string, publicSecretKey: string, signAlgorithm: HashAlgorithmType, options: VerifyOptions): VerifyResult {
+    static verify(token: string, secretKey: string, signAlgorithm: HashAlgorithmType, options: VerifyOptions): VerifyResult {
         const [headerB64, payloadB64, signature] = token.split(".");
 
         const decodedHeader: JwtHeader = JSON.parse(BaseUrlUtils.base64UrlDecode(headerB64));
@@ -139,7 +140,7 @@ export class JWToken {
                 return { status: tokenStatus.invalid, message: msg.allowInvAsyErrMsg };
         }
 
-        const signatureCheck: string = createHmac(signAlgorithm, publicSecretKey)
+        const signatureCheck: string = createHmac(signAlgorithm, secretKey)
             .update(`${headerB64}.${payloadB64}`)
             .digest("base64")
             .replace(/=+$/, "")
@@ -217,5 +218,45 @@ export class JWToken {
         }
 
         return null;
+    }
+
+    /**
+     *
+     * @param userId
+     */
+    static generateStoredRefreshToken(userId: string) {
+        const expiresIn: Date | Object = this.expiresTokenHour(1);
+        return {
+            userId: userId,
+            hashedToken: this.generateRandomToken(156),
+            expiresToken: expiresIn,
+            createdAt: new Date(Date.now()),
+        };
+    }
+
+    /**
+     *
+     * @param length
+     * @private
+     */
+    private static generateRandomToken(length: number): string {
+       const charString: string = charset;
+       let random: string = "";
+       for (let i = 0, n = charString.length; i < length; ++i) {
+           random += charString.charAt(Math.floor(Math.random() * n));
+       }
+       return random;
+    }
+
+    private static expiresTokenHour(hours: number, date: Date= new Date()): Date | Object {
+        if (typeof hours !== 'number') {
+            return { errorMessage: "INVALID_ARGUMENTS", message: "A hours is an invalid argument" }
+        }
+        if (!(date instanceof Date)) {
+            return { errorMessage: "INVALID_ARGUMENTS", message: "A date is an invalid argument." }
+        }
+
+        date.setHours(date.getHours() + hours);
+        return date;
     }
 }
