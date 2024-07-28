@@ -68,7 +68,7 @@ Generated Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyMywicm9sZS
 
 Signature:
 ```
-verify(token: string, publicSecretKey: string, signAlgorithm: HashAlgorithmType, options: VerifyOptionsInterface): VerifyResultInterface
+verify(token: string, publicSecretKey: string, signAlgorithm: HashAlgorithmType, options: VerifyOptionsInterface): VerifyAccessTokenInterface
 ```
 **Parameters:**
 * `token` (string): The JWT to verify.
@@ -76,9 +76,9 @@ verify(token: string, publicSecretKey: string, signAlgorithm: HashAlgorithmType,
 * `algorithm` (string, optional): The hashing algorithm used for verifying the token. Defaults to 'HS256'. Must match the algorithm used when signing the token.
 
 **Returns:**
-* `VerifyResultInterface`: The decoded payload if the token is valid, or null if verification fails.
+* `VerifyAccessTokenInterface`: The decoded payload if the token is valid, or null if verification fails.
 
-#### VerifyResultInterface contains :
+#### VerifyAccessTokenInterface contains :
 * `status:` 'VALID' | 'EXPIRED' | 'INVALID';
 * `payload?:` VerifyDecodePayloadInterface;
 * `message?:` string;

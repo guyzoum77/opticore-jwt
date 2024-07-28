@@ -1,7 +1,7 @@
 import {JWToken} from "../src/core/generateJWT.core";
 import {SignOptionsInterface} from "../src/interfaces/signOptions.interface";
 import {VerifyOptionsInterface} from "../src/interfaces/verifyOptions.interface";
-import {VerifyResultInterface as VerifyResult} from "../src/interfaces/VerifyResultInterface";
+import {VerifyAccessTokenInterface as VerifyResult} from "../src/interfaces/VerifyAccessTokenInterface";
 
 const payload: Object = { userId: 123, role: "ROLE_ADMIN" };
 const secret: string = 'my-secret';

@@ -9,7 +9,7 @@ import {ErrorMessage as msg} from "../exceptions/messages/error.message";
 import StackTraceHandler from "../exceptions/handler/stackTrace.handler";
 import {HttpStatusCodesConstant as status} from "../utils/constants/httpStatusCode.constant";
 import {VerifyDecodePayloadInterface as VerifyDecodePayload} from "../interfaces/VerifyDecodePayload.interface";
-import {VerifyResultInterface as VerifyResult} from "../interfaces/VerifyResultInterface";
+import {VerifyAccessTokenInterface as VerifyResult} from "../interfaces/VerifyAccessTokenInterface";
 import {TokenStatusEnum as tokenStatus} from "../enums/tokenStatus.enum";
 import {charsetConstant as charset} from "../utils/constants/charset.constant";
 
