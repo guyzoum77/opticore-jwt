@@ -1,6 +1,6 @@
 {
   "name": "opticore-jwt",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "json web token",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
