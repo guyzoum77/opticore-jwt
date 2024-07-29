@@ -225,7 +225,7 @@ export class JWToken {
      * @param userId
      */
     static generateStoredRefreshToken(userId: string) {
-        const expiresIn: Date | Object = this.expiresTokenHour(1);
+        const expiresIn: Date | Object = this.defineExpiresTokenHour(1);
         return {
             userId: userId,
             hashedToken: this.generateRandomToken(156),
@@ -248,7 +248,7 @@ export class JWToken {
        return random;
     }
 
-    private static expiresTokenHour(hours: number, date: Date= new Date()): Date | Object {
+    static defineExpiresTokenHour(hours: number, date: Date= new Date()): Date | Object {
         if (typeof hours !== 'number') {
             return { errorMessage: "INVALID_ARGUMENTS", message: "A hours is an invalid argument" }
         }
